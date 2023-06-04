@@ -1,0 +1,67 @@
+import java.io.*;
+import java.util.*;
+
+public class task14 {
+    static ArrayList<double[]> arrayList=new ArrayList<double[]>();
+    static int M=0;
+    public static void main(String[] args) throws FileNotFoundException, IOException {
+        //Переменные для чтения файла
+        File file= new File("C:\\Users\\Hacker\\Desktop\\1 курс\\Информатика\\10 лаба\\14t.txt");
+        FileReader fR  = new FileReader(file);
+        BufferedReader file_BR = new BufferedReader(fR);
+        //Переменные для записи файла
+        FileWriter fW  = new FileWriter(file,true);
+        BufferedWriter file_BW = new BufferedWriter(fW);
+        String[] masStr;
+        int count=0, N=0;
+        while (file_BR.ready()){
+            String S=file_BR.readLine();
+            if (count==0) N=Integer.valueOf(S);
+            if(count>N){
+                masStr=S.split("\t");
+                arrayList.add(new double[masStr.length]);
+                for (int i=0;i<masStr.length;i++){
+                    arrayList.get(M)[i]=Double.parseDouble(masStr[i]);
+                }
+                M++;
+            }
+            count++;
+        }
+        double[][] Obrab_Chisl=new double[3][arrayList.get(0).length]; //Двумерный массив для записи мин,макс, ср знач.
+        for (int i=0;i<arrayList.get(0).length;i++){
+            double max=arrayList.get(0)[i], min=arrayList.get(0)[i];
+            for (int j=0;j<M;j++){
+                if(arrayList.get(j)[i]>max) max=arrayList.get(j)[i];
+                if(arrayList.get(j)[i]<min) min=arrayList.get(j)[i];
+                Obrab_Chisl[2][i]+=arrayList.get(j)[i]/M;
+            }
+            Obrab_Chisl[0][i]=max;
+            Obrab_Chisl[1][i]=min;
+        }
+        String Rezult="";
+        file_BW.newLine();
+        file_BW.newLine();
+        for (int i=0;i<3;i++){
+            if (i==0) Rezult+="max\t";
+            else if (i==1) Rezult+="min\t";
+            if (i==2) Rezult+="srznach\t";
+            for (int j=0;j<arrayList.get(0).length;j++) Rezult+=String.format("%.4e\t", Obrab_Chisl[i][j]);
+            file_BW.write(Rezult);
+            file_BW.newLine();
+            Rezult="";
+        }
+        String RezultTwo="";
+        file_BW.newLine();
+        file_BW.newLine();
+        for (int i=0;i<arrayList.get(0).length;i++){
+            RezultTwo+=i+1+": otklonenie\t";
+            for (int j=0;j<M;j++){
+                RezultTwo+=String.format("%.4e\t", arrayList.get(j)[i]-Obrab_Chisl[2][i]);
+            }
+            file_BW.write(RezultTwo);
+            file_BW.newLine();
+            RezultTwo="";
+        }
+        file_BW.close();
+    }
+}
